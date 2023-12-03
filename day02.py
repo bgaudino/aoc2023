@@ -8,7 +8,7 @@ def main():
     possible_games = []
     powers = []
     with open('data/day02.txt') as f:
-        for line in f.readlines():
+        for line in f:
             game_id, ball_counts = parse(line)
             if is_possible(ball_counts):
                 possible_games.append(game_id)
