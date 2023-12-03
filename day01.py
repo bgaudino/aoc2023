@@ -19,10 +19,12 @@ def main():
         document = f.readlines()
 
     part1 = sum(get_calibration_value(line) for line in document)
+    assert part1 == 54331
     print(f'Part 1: {part1}')
 
     pattern = fr"(?=(\d|{'|'.join(NUMBERS)}))"
     part2 = sum(get_calibration_value(line, pattern) for line in document)
+    assert part2 == 54518
     print(f'Part 2: {part2}')
 
 

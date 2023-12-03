@@ -14,8 +14,13 @@ def main():
                 possible_games.append(game_id)
             powers.append(prod(ball_counts.values()))
 
-    print(f'Part 1: {sum(possible_games)}')
-    print(f'Part 2: {sum(powers)}')
+    part1 = sum(possible_games)
+    assert part1 == 2716
+    print(f'Part 1: {part1}')
+
+    part2 = sum(powers)
+    assert part2 == 72227
+    print(f'Part 2: {part2}')
 
 
 def parse(line):
