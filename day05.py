@@ -43,8 +43,11 @@ class Map:
                 high = middle - 1
         return None
 
-    def seeds_from_range(self, start: int, length: int) -> list[int]:
-        return list(i for i in range(start, start + length))
+    def reverse_convert(self, n: int) -> int:
+        for item in self.items:
+            if item.contains(n - item.difference):
+                return n - item.difference
+        return n
 
 
 @dataclass
@@ -58,6 +61,21 @@ class Almanac:
 
     def closest_location(self, seeds: list[int]) -> int:
         return min(self.location(seed) for seed in seeds)
+
+    def seed(self, location: int) -> int:
+        for m in reversed(self.maps):
+            location = m.reverse_convert(location)
+        return location
+
+    def seed_ranges(self, seeds: list[int]) -> list[list[int]]:
+        return [seeds[i:i + 2] for i in range(0, len(seeds), 2)]
+
+    def is_possible(self, location: int, seed_ranges: list[list[int]]) -> bool:
+        seed = self.seed(location)
+        for start, length in seed_ranges:
+            if start <= seed < start + length:
+                return True
+        return False
 
 
 def parse() -> tuple[list[int], Almanac]:
@@ -76,22 +94,18 @@ def parse() -> tuple[list[int], Almanac]:
 
 def main():
     seeds, almanac = parse()
-
     part1 = almanac.closest_location(seeds)
     assert part1 == 178159714
     print(f'Part 1: {part1}')
 
-    pairs = []
-    for i in range(0, len(seeds), 2):
-        pairs.append(seeds[i:i + 2])
-    seeds = []
-    for i, pair in enumerate(pairs):
-        seeds += almanac.maps[0].seeds_from_range(*pair)
-
-    # TODO: make not slow as shit
-    part2 = almanac.closest_location(seeds)
-    assert part2 == 100165128
-    print(f'Part 2: {part2}')
+    seed_ranges = almanac.seed_ranges(seeds)
+    location = 0
+    while True:
+        if almanac.is_possible(location, seed_ranges):
+            break
+        location += 1
+    assert location == 100165128
+    print(f'Part 2: {location}')
 
 
 if __name__ == '__main__':
