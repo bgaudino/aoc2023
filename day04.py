@@ -1,18 +1,17 @@
 import re
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Set
 
 
 @dataclass
 class Card:
-    winners: Set[int]
-    numbers: Set[int]
+    winners: set[int]
+    numbers: set[int]
 
-    def winning_numbers(self):
+    def winning_numbers(self) -> set[int]:
         return self.numbers.intersection(self.winners)
 
-    def value(self):
+    def value(self) -> int:
         val = 0
         for i in range(len(self.winning_numbers())):
             if i == 0:

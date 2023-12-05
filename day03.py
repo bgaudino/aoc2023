@@ -1,16 +1,19 @@
 import re
 from collections import defaultdict
-from typing import Optional
+from typing import Optional, DefaultDict, Tuple
 
 with open('data/day03.txt') as f:
     schematic = f.readlines()
 
 max_x, max_y = len(schematic[0]), len(schematic)
 
+Gear = Tuple[int, int]
+Gears = DefaultDict[Gear, list[int]]
+
 
 def main():
     parts: list[int] = []
-    gears: defaultdict[tuple[int, int], list[int]] = defaultdict(list)
+    gears: Gears = defaultdict(list)
     for y, line in enumerate(schematic):
         current_part = ''
         for x, char in enumerate(line):
@@ -33,7 +36,7 @@ def main():
     print(f'Part 2: {part2}')
 
 
-def get_part(x: int, y: int, part: str) -> tuple[Optional[int], Optional[tuple[int, int]]]:
+def get_part(x: int, y: int, part: str) -> tuple[Optional[int], Optional[Gear]]:
     neighbors = []
     if y - 1 >= 0:
         neighbors += [
