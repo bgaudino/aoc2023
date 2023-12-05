@@ -23,11 +23,11 @@ def main():
     print(f'Part 2: {part2}')
 
 
-def parse(line):
+def parse(line: str) -> tuple[int, defaultdict[str, int]]:
     game, balls = line.split(': ')
     game_id = int(game.split(' ')[-1])
     subsets = balls.split('; ')
-    ball_counts = defaultdict(int)
+    ball_counts: defaultdict[str, int] = defaultdict(int)
     for subset in subsets:
         for ball in subset.split(', '):
             count, color = ball.strip().split(' ')
@@ -35,7 +35,7 @@ def parse(line):
     return game_id, ball_counts
 
 
-def is_possible(ball_count):
+def is_possible(ball_count: defaultdict[str, int]) -> bool:
     for color, count in BAG.items():
         if count < ball_count.get(color, 0):
             return False

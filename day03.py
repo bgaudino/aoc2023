@@ -1,5 +1,6 @@
 import re
 from collections import defaultdict
+from typing import Optional
 
 with open('data/day03.txt') as f:
     schematic = f.readlines()
@@ -8,8 +9,8 @@ max_x, max_y = len(schematic[0]), len(schematic)
 
 
 def main():
-    parts = []
-    gears = defaultdict(list)
+    parts: list[int] = []
+    gears: defaultdict[tuple[int, int], list[int]] = defaultdict(list)
     for y, line in enumerate(schematic):
         current_part = ''
         for x, char in enumerate(line):
@@ -19,8 +20,8 @@ def main():
                 part, gear = get_part(x, y, current_part)
                 if part:
                     parts.append(int(current_part))
-                if gear:
-                    gears[gear].append(part)
+                    if gear:
+                        gears[gear].append(part)
                 current_part = ''
     part1 = sum(parts)
     assert part1 == 539590
@@ -32,7 +33,7 @@ def main():
     print(f'Part 2: {part2}')
 
 
-def get_part(x, y, part):
+def get_part(x: int, y: int, part: str) -> tuple[Optional[int], Optional[tuple[int, int]]]:
     neighbors = []
     if y - 1 >= 0:
         neighbors += [

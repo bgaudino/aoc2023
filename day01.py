@@ -28,8 +28,8 @@ def main():
     print(f'Part 2: {part2}')
 
 
-def get_calibration_value(text, pattern=r'\d'):
-    matches = re.findall(pattern, text)
+def get_calibration_value(text: str, pattern: str = r'\d') -> int:
+    matches: list[str] = re.findall(pattern, text)
     return int(''.join(m if m.isdigit() else NUMBERS[m] for m in (matches[0], matches[-1])))
 
 
