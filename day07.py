@@ -1,8 +1,7 @@
 from collections import Counter
 from dataclasses import dataclass
-from functools import cached_property
 from enum import Enum
-from typing import Self
+from typing import Self, Iterable
 
 CARD_RANKS = {
     '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,
@@ -24,37 +23,50 @@ class HandType(Enum):
 class Hand:
     cards: str
     bid: int
+    jokers: bool = False
 
     def __lt__(self, other: Self) -> bool:
-        if self.type == other.type:
-            return self.card_values < other.card_values
-        return self.type.value < other.type.value
+        x, y = self.type(), other.type()
+        if x == y:
+            return self.card_values() < other.card_values()
+        return x.value < y.value
 
-    @cached_property
     def counter(self) -> Counter[str]:
-        return Counter(self.cards)
+        counter = Counter(self.cards)
+        if self.jokers and 'J' in counter and 0 < counter['J'] < 5:
+            jokers = counter.pop('J', 0)
+            most_common = counter.most_common(1)[0][0]
+            counter[most_common] += jokers
+        return counter
 
-    @cached_property
     def card_values(self) -> list[int]:
-        return [CARD_RANKS[card] for card in self.cards]
+        return [
+            1 if self.jokers and card == 'J'
+            else CARD_RANKS[card] for card in self.cards
+        ]
 
-    @cached_property
     def type(self) -> HandType:
-        if len(self.counter) == 1:
+        counter = self.counter()
+        unique_cards = len(counter)
+        if unique_cards == 1:
             return HandType.FIVE_OF_A_KIND
-        if len(self.counter) == 2:
-            for count in self.counter.values():
+        if unique_cards == 2:
+            for count in counter.values():
                 if count in (1, 4):
                     return HandType.FOUR_OF_A_KIND
                 return HandType.FULL_HOUSE
-        if len(self.counter) == 3:
-            for count in self.counter.values():
+        if unique_cards == 3:
+            for count in counter.values():
                 if count == 3:
                     return HandType.THREE_OF_A_KIND
             return HandType.TWO_PAIR
-        if len(self.counter) == 4:
+        if unique_cards == 4:
             return HandType.ONE_PAIR
         return HandType.HIGH_CARD
+
+
+def calculate_winnings(hands: Iterable[Hand]) -> int:
+    return sum(hand.bid * i for i, hand in enumerate(sorted(hands), 1))
 
 
 def main():
@@ -64,9 +76,15 @@ def main():
             cards, bid, = line.strip().split(' ')
             hands.append(Hand(cards, int(bid)))
 
-    hands.sort()
-    winnings = sum(hand.bid * i for i, hand in enumerate(hands, 1))
-    print(f'Part 1: {winnings}')
+    part1 = calculate_winnings(hands)
+    assert part1 == 247815719
+    print(f'Part 1: {part1}')
+
+    for hand in hands:
+        hand.jokers = True
+    part2 = calculate_winnings(hands)
+    assert part2 == 248747492
+    print(f'Part 2: {part2}')
 
 
 if __name__ == '__main__':
