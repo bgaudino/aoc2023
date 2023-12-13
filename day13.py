@@ -18,7 +18,7 @@ class Pattern:
                     columns[x].add(y)
         return rows, columns
 
-    def score(self, allowed_differences: int = 0) -> int:
+    def summary(self, allowed_differences: int = 0) -> int:
         rows, columns = self.rocks()
         row = self.find_reflection(rows, allowed_differences)
         if row is not None:
@@ -49,10 +49,10 @@ def main():
     with open('data/day13.txt') as f:
         patterns = [Pattern(p.split('\n')) for p in f.read().split('\n\n')]
 
-    part1 = sum(p.score() for p in patterns)
+    part1 = sum(p.summary() for p in patterns)
     assert part1 == 35210
     print(f'Part 1: {part1}')
-    part2 = sum(p.score(1) for p in patterns)
+    part2 = sum(p.summary(1) for p in patterns)
     assert part2 == 31974
     print(f'Part 2: {part2}')
 
