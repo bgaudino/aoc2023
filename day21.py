@@ -27,5 +27,5 @@ for _ in range(64):
             seen[location] = neighbors
         new_locations.update(seen[location])
     locations = new_locations
-    
+
 print(len(locations))
