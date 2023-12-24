@@ -26,9 +26,10 @@ def main():
 
 
 def calculate_intersection(a: HailStone, b: HailStone):
-    if a.vx * b.vy - a.vy * b.vx == 0:
+    d = a.vx * b.vy - a.vy * b.vx
+    if d == 0:
         return None
-    t = ((b.px - a.px) * b.vy - (b.py - a.py) * b.vx) / (a.vx * b.vy - a.vy * b.vx)
+    t = ((b.px - a.px) * b.vy - (b.py - a.py) * b.vx) / d
     return (a.px + t * a.vx, a.py + t * a.vy)
 
 
